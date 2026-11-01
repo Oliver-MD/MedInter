@@ -237,8 +237,10 @@ a.vpl-row:hover{ background:var(--surface-2); text-decoration:none; }
 .vpl-meter{ display:block; height:4px; margin-top:6px; border-radius:2px; background:var(--surface-3); overflow:hidden; }
 .vpl-meter i{ display:block; height:100%; border-radius:2px; background:var(--accent); }
 .vpl-empty{ padding:36px 16px; text-align:center; color:var(--muted); }
-.empty{ text-align:center; color:var(--muted); padding:36px 16px; }
-.empty .sq{ margin:0 auto 10px; }
+.empty{ text-align:center; color:var(--muted); padding:36px 16px; line-height:1.55; text-wrap:balance; }
+/* the icon on its own line, centred above the message (as an inline box it sat in the text line, glued to the first word) */
+.empty .sq{ display:flex; margin:0 auto 12px; }
+.empty .small{ display:inline-block; margin-top:6px; line-height:1.5; }
 .pager{ display:flex; align-items:center; justify-content:center; gap:14px; margin-top:16px; }
 .pager .pos{ font-size:13px; color:var(--muted); font-variant-numeric:tabular-nums; }
 

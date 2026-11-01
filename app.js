@@ -817,7 +817,7 @@
           <div class="switches">${FOODS.map(([k, l, i]) => `<label class="switch"><input type="checkbox" data-food="${k}" ${S.food[k] ? 'checked' : ''}/><span class="tr"></span>${ic(i, 'sm')}<span>${esc(l)}</span></label>`).join('')}</div>
           <div class="filters" style="margin-top:14px"><button class="btn sm" id="ixclear">${ic('trash', 'xs')}Vymazat vše</button><button class="btn sm" id="ixlink">${ic('link', 'xs')}Kopírovat odkaz</button></div>
         </section>
-        <section class="card" id="ixres"><div class="empty"><span class="sq">${ic('zap')}</span>Přidejte alespoň dva léky – výsledky se zobrazí zde.</div></section>
+        <section class="card" id="ixres"><div class="empty"><span class="sq">${ic('zap')}</span>Přidejte alespoň dva léky&nbsp;– výsledky se zobrazí zde.</div></section>
       </div>`;
     const q = $('#ixq'), dd = $('#ixdd'); let sg = [], act = -1;
     const drawSug = () => {
@@ -851,7 +851,7 @@
     if (nav !== NAV || run !== IX_RUN) return;   // výběr nebo stránka se mezitím změnily: platí novější výpočet
     reportCheck(all.map(it => it.type === 'product' ? 'p:' + it.id : it.type === 'substance' ? 's:' + it.code : 'f:' + it.key).sort().join('|'), all.length);
     const nPairs = all.length * (all.length - 1) / 2;
-    if (!f.length) { $('#ixres').innerHTML = `<div class="empty"><span class="sq">${ic('shield')}</span>V dostupných zdrojích nebyla pro zadané kombinace nalezena žádná interakce.<br><span class="small">To neznamená, že interakce neexistuje – vždy ověřte bod 4.5 SPC.</span></div>`; return; }
+    if (!f.length) { $('#ixres').innerHTML = `<div class="empty"><span class="sq">${ic('shield')}</span>V dostupných zdrojích nebyla pro zadané kombinace nalezena žádná interakce.<br><span class="small">To neznamená, že interakce neexistuje&nbsp;– vždy ověřte bod 4.5 SPC.</span></div>`; return; }
     const groups = new Map();
     for (const x of f) { const k = x.pair.join('-'); if (!groups.has(k)) groups.set(k, { pair: x.pair, sev: x.sev, items: [] }); const g = groups.get(k); g.items.push(x); if (SEV_ORD[x.sev] < SEV_ORD[g.sev]) g.sev = x.sev; }
     const gl = [...groups.values()].sort((a, b) => SEV_ORD[a.sev] - SEV_ORD[b.sev] || a.pair[0] - b.pair[0] || a.pair[1] - b.pair[1]);
