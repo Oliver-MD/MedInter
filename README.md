@@ -74,7 +74,7 @@ To publish a new release, add a new release folder and then update `current.json
 
 ## Disclaimer
 
-MedInter is an educational aid. It does not replace the current SPC or clinical judgement.
+MedInter is an educational aid for study purposes only. It is not intended for decisions about the treatment of individual patients and does not replace the current SPC.
 
 ## License
 

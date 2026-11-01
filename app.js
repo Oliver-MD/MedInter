@@ -580,7 +580,7 @@
     return { period: str(v && v.period), boxes };
   }
   async function renderVpl() {
-    const head = header('vpl', 'Nejčastější ve VPL', 'Rozcestník na nejvíce předepisované léčivé látky vybrané pro praxi VPL, rozdělený podle oborů');
+    const head = header('vpl', 'Nejčastější ve VPL', 'Studijní rozcestník na nejčastěji předepisované léčivé látky ve VPL, rozdělený podle oborů');
     if (!S.vpl) {
       view.innerHTML = head + loading();
       const nav = NAV;
@@ -602,7 +602,7 @@
       return `<div class="vpl-row"><div class="vpl-row-t"><span class="vpl-name">${it.s.map(s => `<a href="#/latka/${encodeURIComponent(s.c)}">${esc(name(s))}</a>`).join(' + ')}</span>${num}</div><div class="vpl-meta">${esc(it.atc)} · kombinace · ${nLp} LP</div>${meter}</div>`;
     };
     view.innerHTML = head + `<div class="vpl-tools"><div class="ix-search field-wrap" style="flex:1 1 280px;max-width:420px"><div class="field">${ic('search', 'sm')}<input id="vq" type="search" placeholder="Najít látku nebo ATC v seznamu…" autocomplete="off"/></div></div></div>
-      <details class="vpl-src"><summary>Odkud čísla pocházejí</summary><p>Předepsaná balení z eReceptu SÚKL za ${esc(S.vpl.period)} podle ATC, od všech odborností, protože data odbornost lékaře neuvádějí. Výběr 100 položek je proto odhad pro praxi VPL: ručně jsou vyřazeny PZLÚ, oční přípravky, antikoncepce, inzuliny a čistě specializovaná léčiva. Paracetamol a ibuprofen jsou doplněny kvůli volnému prodeji, eRecept je podhodnocuje. Délka pruhu ukazuje počet balení vůči nejčastější položce, zařazení do oborů je orientační.</p></details>
+      <details class="vpl-src"><summary>Odkud čísla pocházejí</summary><p>Předepsaná balení z eReceptu SÚKL za ${esc(S.vpl.period)} podle ATC, od všech odborností, protože data odbornost lékaře neuvádějí. Výběr 100 položek je proto odhad pro obor VPL: ručně jsou vyřazeny PZLÚ, oční přípravky, antikoncepce, inzuliny a čistě specializovaná léčiva. Paracetamol a ibuprofen jsou doplněny kvůli volnému prodeji, eRecept je podhodnocuje. Délka pruhu ukazuje počet balení vůči nejčastější položce, zařazení do oborů je orientační.</p></details>
       <div class="vpl-chips" id="vchips"></div><div class="vpl-grid" id="vgrid"></div>`;
     const draw = q => {
       const nq = norm(q.trim());
@@ -724,7 +724,7 @@
         if (r.a.type === 'class' && r.b.type === 'class' && r.a.key === r.b.key && A.keys.some(k => B.keys.includes(k))) continue;
         (r.tags || []).forEach(t => covered.add(t)); covered.add('rule');
         findings.push({ pair: [i, j], sev: SEV[r.severity] ? r.severity : 'C', src: 'Kurátorovaný přehled', title: `${esc(r.a.label)} × ${esc(r.b.label)}`, rule: r,
-          body: `<div class="lab">Mechanismus</div><p>${esc(r.mechanism)}</p><div class="lab">Riziko</div><p>${esc(r.effect)}</p><div class="lab">Doporučení pro praxi</div><p>${esc(r.management)}</p>${r.onset ? '<div class="small" style="margin-top:6px">Nástup: ' + esc(r.onset) + '</div>' : ''}<div class="ev">Zdroje: ${esc((r.evidence || []).join('; '))}${r.confidence === 'medium' ? ' · <i>střední míra jistoty</i>' : ''}</div>` });
+          body: `<div class="lab">Mechanismus</div><p>${esc(r.mechanism)}</p><div class="lab">Riziko</div><p>${esc(r.effect)}</p><div class="lab">Doporučení</div><p>${esc(r.management)}</p>${r.onset ? '<div class="small" style="margin-top:6px">Nástup: ' + esc(r.onset) + '</div>' : ''}<div class="ev">Zdroje: ${esc((r.evidence || []).join('; '))}${r.confidence === 'medium' ? ' · <i>střední míra jistoty</i>' : ''}</div>` });
       }
       // 3. CYP / P-gp table (FDA) – PK pairs
       for (const [X, Y] of [[A, B], [B, A]]) {
@@ -803,7 +803,7 @@
     const nav = NAV, run = ++IX_RUN;
     const items = S.sel.map(selItem).filter(Boolean);
     const foodItems = Object.entries(S.food).filter(([k, v]) => v).map(([k]) => ({ type: 'food', key: k, label: classLabel(k), sub: 'potravina / bylina', keys: [], codes: [], atc: [] }));
-    view.innerHTML = header('interakce', 'Kontrola interakcí', 'Sestavte kombinaci léků – vyhodnotí se všechny dvojice podle kurátorovaných pravidel, tabulek CYP/P-gp a textů SPC. Studijní pomůcka, nenahrazuje SPC ani klinický úsudek.') + `
+    view.innerHTML = header('interakce', 'Kontrola interakcí', 'Sestavte kombinaci léků – vyhodnotí se všechny dvojice podle kurátorovaných pravidel, tabulek CYP/P-gp a textů SPC. Studijní pomůcka – není určena k rozhodování o léčbě konkrétního pacienta a nenahrazuje SPC.') + `
       <div class="ix-grid">
         <section class="card">
           <div class="card-h"><h2>${ic('pill', 'sm')}Kombinace léků <span class="count">${items.length}</span></h2></div>
@@ -859,7 +859,7 @@
         const key = pk(g), o = ixOpen.has(key);
         return `<div class="pair${o ? ' open' : ''}" data-pk="${esc(key)}"><div class="pair-h" role="button" tabindex="0" aria-expanded="${o}"><span class="sev ${g.sev}">${esc(SEV[g.sev])}</span><div class="main"><div class="t">${esc(all[g.pair[0]].label)}<small>×</small>${esc(all[g.pair[1]].label)}</div><div class="s">${its.map(x => x.title).slice(0, 2).join(' · ')}</div></div><span class="small">${its.length} ${its.length === 1 ? 'nález' : its.length < 5 ? 'nálezy' : 'nálezů'}</span>${ic('down', 'sm chv')}</div>
           <div class="pair-b">${its.map(x => `<div class="find"><div class="find-h"><span class="sev ${x.sev}">${x.sev === 'I' ? 'i' : x.sev}</span><b>${x.title}</b><span class="src">· ${esc(x.src)}</span></div>${x.body}</div>`).join('')}</div></div>`; }).join('') +
-      `<div class="small" style="margin-top:10px">Vyhodnocení kombinuje kurátorovaný přehled interakcí (sestavený ze SPC a veřejných zdrojů, s automatickou kontrolou proti SPC), tabulky inhibitorů a induktorů CYP a P-gp, skupinová pravidla (ATC, SPC) a vyhledání zmínek ve schválených SPC. Nenahrazuje klinický úsudek ani úplné znění SPC.</div>`;
+      `<div class="small" style="margin-top:10px">Vyhodnocení kombinuje kurátorovaný přehled interakcí (sestavený ze SPC a veřejných zdrojů, s automatickou kontrolou proti SPC), tabulky inhibitorů a induktorů CYP a P-gp, skupinová pravidla (ATC, SPC) a vyhledání zmínek ve schválených SPC. Studijní pomůcka: není určena k rozhodování o léčbě konkrétního pacienta a nenahrazuje úplné znění SPC.</div>`;
     $$('.pair-h').forEach(h => { const t = () => { const p = h.parentElement, o = p.classList.toggle('open'); h.setAttribute('aria-expanded', o); if (o) ixOpen.add(p.dataset.pk); else ixOpen.delete(p.dataset.pk); }; h.onclick = t; h.onkeydown = e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); t(); } }; });
   }
 
@@ -878,7 +878,7 @@
       <li><b>Výtah ze SPC</b> – u ostatních dokumentů věty převzaté doslovně z SPC (indikace, kontraindikace, věty s dávkou pod nadpisem z SPC, klíčová upozornění).</li>
       <li>U každé bubliny lze rozkliknout <b>celé znění</b> příslušného bodu SPC; vždy je k dispozici i odkaz na originální dokument SÚKL/EMA.</li></ul>
       <h3>Jak funguje kontrola interakcí</h3>
-      <ul><li><b>Kurátorovaný přehled</b> (${fmtN(m.n_rules)} položek) klinicky významných interakcí pro praxi VPL, sestavený s pomocí AI z bodů 4.3 a 4.5 SPC registrovaných přípravků a z veřejných zdrojů (tabulky FDA, ONC high-priority DDI list, kritéria STOPP/START v3 – viz citace níže). Každá položka prošla automatizovanou kontrolou proti textu SPC; nejde o lékařsky recenzovaný seznam.</li>
+      <ul><li><b>Kurátorovaný přehled</b> (${fmtN(m.n_rules)} položek) klinicky významných interakcí ve VPL, sestavený s pomocí AI z bodů 4.3 a 4.5 SPC registrovaných přípravků a z veřejných zdrojů (tabulky FDA, ONC high-priority DDI list, kritéria STOPP/START v3 – viz citace níže). Každá položka prošla automatizovanou kontrolou proti textu SPC; nejde o lékařsky recenzovaný seznam.</li>
       <li><b>Farmakokinetická pravidla</b> – inhibitor/induktor × substrát pro CYP3A4, 2D6, 2C9, 2C19, 1A2, 2C8, 2B6 a P-gp.</li>
       <li><b>Aditivní účinky</b> – prodloužení QT, serotonergní účinek, útlum CNS, hyperkalemie, nefrotoxicita, anticholinergní zátěž, krvácení.</li>
       <li><b>Vyhledání v SPC</b> – zmínky o druhém léku nebo jeho skupině v bodech 4.5 a 4.3 SPC s citací.</li></ul>
@@ -888,7 +888,7 @@
       <li><b>FDA</b> – Drug Development and Drug Interactions: Table of Substrates, Inhibitors and Inducers (U.S. Food and Drug Administration, volné dílo).</li>
       <li><b>ONC high-priority DDI list</b> – Phansalkar S, et al. High-priority drug–drug interactions for use in electronic health records. J Am Med Inform Assoc. 2012;19(5):735–743.</li></ul>
       <h3>Podmínky užití</h3>
-      <p>Otevřená data SÚKL lze užívat i komerčně s uvedením zdroje a bez změny významu – viz <a href="https://opendata.sukl.cz/?q=podminky-uziti-otevrenych-dat" target="_blank" rel="noopener">Podmínky užití otevřených dat SÚKL</a>. Informace o přípravku EMA lze reprodukovat i komerčně s uvedením EMA jako zdroje (© European Medicines Agency). SÚKL ani EMA tento nástroj neschvalují ani nepodporují. Nástroj MedInter je vzdělávací pomůcka a nenahrazuje aktuální SPC ani odborné posouzení. Aktualizováno ${esc(m.built_cs)}.</p>
+      <p>Otevřená data SÚKL lze užívat i komerčně s uvedením zdroje a bez změny významu – viz <a href="https://opendata.sukl.cz/?q=podminky-uziti-otevrenych-dat" target="_blank" rel="noopener">Podmínky užití otevřených dat SÚKL</a>. Informace o přípravku EMA lze reprodukovat i komerčně s uvedením EMA jako zdroje (© European Medicines Agency). SÚKL ani EMA tento nástroj neschvalují ani nepodporují. Nástroj MedInter je vzdělávací pomůcka určená výhradně ke studiu; není určen k rozhodování o léčbě konkrétního pacienta a nenahrazuje aktuální SPC. Aktualizováno ${esc(m.built_cs)}.</p>
     </section>`;
   }
 
