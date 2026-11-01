@@ -218,11 +218,16 @@
   }
 
   // ---------- page header + tabs ----------
-  const TABS = [['leky', 'Přehled léků', 'pill'], ['vpl', 'Nejčastější ve VPL', 'steth'], ['interakce', 'Kontrola interakcí', 'zap'], ['latky', 'Léčivé látky', 'flask'], ['o-databazi', 'O databázi', 'db']];
+  // [route, label, icon, short label for phones]
+  const TABS = [['leky', 'Přehled léků', 'pill', 'Léky'], ['vpl', 'Nejčastější ve VPL', 'steth', 'VPL'], ['interakce', 'Kontrola interakcí', 'zap', 'Interakce'], ['latky', 'Léčivé látky', 'flask', 'Látky'], ['o-databazi', 'O databázi', 'db', 'Info']];
   function paintTabs(active) {
     const bar = $('#mainTabs'); if (!bar) return;   // an older cached index.html has no tab bar: the pages still work
     const n = S.sel.length + Object.values(S.food).filter(Boolean).length;
-    bar.innerHTML = TABS.map(([r, l, i]) => `<a class="tab ${active === r ? 'active' : ''}" href="#/${r}"${active === r ? ' aria-current="page"' : ''}>${ic(i, 'sm')}${esc(l)}${r === 'interakce' && n ? ` <span class="n">${n}</span>` : ''}</a>`).join('');
+    // The label is in its own span so narrow screens can swap it for the short one (CSS, data-s); aria-label keeps the full name.
+    bar.innerHTML = TABS.map(([r, l, i, s]) => {
+      const on = active === r, k = r === 'interakce' && n ? n : 0;
+      return `<a class="tab ${on ? 'active' : ''}" href="#/${r}"${on ? ' aria-current="page"' : ''} data-s="${esc(s)}" aria-label="${esc(k ? l + ' (' + k + ')' : l)}">${ic(i, 'sm')}<span class="tl">${esc(l)}</span>${k ? ` <span class="n">${k}</span>` : ''}</a>`;
+    }).join('');
   }
   function header(active, title, sub) {
     paintTabs(active);
